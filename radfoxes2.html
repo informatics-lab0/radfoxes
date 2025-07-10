@@ -4,7 +4,7 @@
   <link rel="manifest" href="manifest.json" />
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>🦊ラドフォのチーム編成ツール</title>
+  <title>🦊ラドフォ／自動チーム編成アプリ</title>
   <style>
     body {
       font-family: sans-serif;
@@ -64,9 +64,9 @@
 </head>
 <body>
 
-  <h1>🦊ラドフォのチーム編成ツール</h1>
+  <h1>🦊ラドフォ／自動チーム編成アプリ</h1>
 
-  <h2>⛔ 欠席者を選択</h2>
+  <h2>⛔ 欠席者・スタートメンバーを選択</h2>
   <div id="absentSelector"></div>
 
   <label for="groupSize">👥 グループ人数：</label>
@@ -82,24 +82,24 @@
 
   <script>
     const members = [
-      { name: "イヴ", courtNumber: 3, height: 163, position: "F", absent: false, photo: "images/3.jpg"},
-      { name: "トイ", courtNumber: 6, height: 164, position: "F", absent: false, photo: "images/6.jpg"},
-      { name: "サラ", courtNumber: 8, height: 169, position: "C", absent: false, photo: "images/8.jpg"},
-      { name: "ジェイ", courtNumber: 11, height: 163, position: "G", absent: false, photo: "images/11.jpg"},
-      { name: "リュウ", courtNumber: 12, height: 150, position: "G", absent: false, photo: "images/12.jpg"},
-      { name: "カナ", courtNumber: 14, height: 162, position: "F", absent: false, photo: "images/14.jpg"},
-      { name: "リア", courtNumber: 18, height: 153, position: "G", absent: false, photo: "images/18.jpg"},
-      { name: "コア", courtNumber: 25, height: 151, position: "G", absent: false, photo: "images/25.jpg"},
-      { name: "ヒカ", courtNumber: 27, height: 154, position: "G", absent: false, photo: "images/27.jpg"},
-      { name: "ショウ", courtNumber: 30, height: 175, position: "C", absent: false, photo: "images/30.jpg"},
-      { name: "アイ", courtNumber: 37, height: 143, position: "G", absent: false, photo: "images/37.jpg"},
-      { name: "トア", courtNumber: 44, height: 162, position: "G", absent: false, photo: "images/44.jpg"},
-      { name: "レン", courtNumber: 52, height: 169, position: "F", absent: false, photo: "images/52.jpg"},
-      { name: "ココ", courtNumber: 55, height: 156, position: "G", absent: false, photo: "images/55.jpg"},
-      { name: "ルリ", courtNumber: 81, height: 165, position: "F", absent: false, photo: "images/81.jpg"},
-      { name: "ライ", courtNumber: 87, height: 162, position: "F", absent: false, photo: "images/87.jpg"},
-      { name: "クウ", courtNumber: 88, height: 165, position: "F", absent: false, photo: "images/88.jpg"},
-      { name: "ノン", courtNumber: 99, height: 166, position: "F", absent: false, photo: "images/99.jpg"}
+      { name: "イヴ", courtNumber: 3, photo: "images/3.jpg", absent: false, starter: false },
+      { name: "トイ", courtNumber: 6, photo: "images/6.jpg", absent: false, starter: false },
+      { name: "サラ", courtNumber: 8, photo: "images/8.jpg", absent: false, starter: false },
+      { name: "ジェイ", courtNumber: 11, photo: "images/11.jpg", absent: false, starter: false },
+      { name: "リュウ", courtNumber: 12, photo: "images/12.jpg", absent: false, starter: false },
+      { name: "カナ", courtNumber: 14, photo: "images/14.jpg", absent: false, starter: false },
+      { name: "リア", courtNumber: 18, photo: "images/18.jpg", absent: false, starter: false },
+      { name: "コア", courtNumber: 25, photo: "images/25.jpg", absent: false, starter: false },
+      { name: "ヒカ", courtNumber: 27, photo: "images/27.jpg", absent: false, starter: false },
+      { name: "ショウ", courtNumber: 30, photo: "images/30.jpg", absent: false, starter: false },
+      { name: "アイ", courtNumber: 37, photo: "images/37.jpg", absent: false, starter: false },
+      { name: "トア", courtNumber: 44, photo: "images/44.jpg", absent: false, starter: false },
+      { name: "レン", courtNumber: 52, photo: "images/52.jpg", absent: false, starter: false },
+      { name: "ココ", courtNumber: 55, photo: "images/55.jpg", absent: false, starter: false },
+      { name: "ルリ", courtNumber: 81, photo: "images/81.jpg", absent: false, starter: false },
+      { name: "ライ", courtNumber: 87, photo: "images/87.jpg", absent: false, starter: false },
+      { name: "クウ", courtNumber: 88, photo: "images/88.jpg", absent: false, starter: false },
+      { name: "ノン", courtNumber: 99, photo: "images/99.jpg", absent: false, starter: false }
     ];
 
     function renderAbsentSelector() {
@@ -111,8 +111,9 @@
         div.innerHTML = `
           <img src="${player.photo}" alt="${player.name}">
           <label>
-            <input type="checkbox" onchange="markAbsent(${index}, this.checked)">
-            ${player.name} #${player.courtNumber}
+            <input type="checkbox" onchange="markAbsent(${index}, this.checked)">欠席　
+            ${player.name} #${player.courtNumber}（スタート
+            <input type="checkbox" onchange="markStarter(${index}, this.checked)">）
           </label>
         `;
         container.appendChild(div);
@@ -123,20 +124,32 @@
       members[index].absent = isAbsent;
     }
 
+    function markStarter(index, isStarter) {
+      members[index].starter = isStarter;
+    }
+
     function createTeams() {
       const size = parseInt(document.getElementById("groupSize").value);
-      const presentMembers = members.filter(m => !m.absent);
-      const shuffled = presentMembers.slice().sort(() => Math.random() - 0.5);
+      const starters = members.filter(m => m.starter && !m.absent);
+      const others = members.filter(m => !m.starter && !m.absent);
+      const shuffled = others.sort(() => Math.random() - 0.5);
+      const combined = starters.concat(shuffled);
       const teams = [];
 
-      for (let i = 0; i < shuffled.length; i += size) {
-        teams.push(shuffled.slice(i, i + size));
+      for (let i = 0; i < combined.length; i += size) {
+        teams.push(combined.slice(i, i + size));
       }
 
-      const output = document.getElementById("teamsOutput");
-      output.innerHTML = teams.map((team, i) =>
+      let html = "";
+      if (starters.length > 0) {
+        html += `<strong>スタート：</strong>${starters.map(p => p.name).join("、")}<br><br>`;
+      }
+
+      html += teams.map((team, i) =>
         `<strong>チーム${i + 1}</strong>: ${team.map(p => p.name).join("、")}`
       ).join("<br>");
+
+      document.getElementById("teamsOutput").innerHTML = html;
     }
 
     window.onload = renderAbsentSelector;
