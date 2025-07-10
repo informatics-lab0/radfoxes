@@ -19,7 +19,7 @@
       margin-bottom: 10px;
     }
     h2 {
-      font-size: 24px;
+      font-size: 22px;
       margin-bottom: 10px;
     }
     .player-checkbox {
@@ -74,7 +74,7 @@
 
   <h1>🦊ラドフォ／自動チーム編成アプリ</h1>
 
-  <h2>⛔ 欠席者・スタートメンバー★を選択</h2>
+  <h2>⛔【★スタート】【休み】をチェック</h2>
   <div id="absentSelector"></div>
 
   <label for="groupSize">👥 グループ人数：</label>
@@ -120,7 +120,7 @@
           <img src="${player.photo}" alt="${player.name}">
           <div class="label-container">
             ★<input type="checkbox" onchange="markStarter(${index}, this.checked)">
-            ${player.name} #${player.courtNumber}（欠席
+            ${player.name} #${player.courtNumber}（休み
             <input type="checkbox" onchange="markAbsent(${index}, this.checked)">）
           </div>
         `;
