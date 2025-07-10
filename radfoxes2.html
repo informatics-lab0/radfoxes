@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <link rel="manifest" href="manifest.json" />
+  <meta charset="UTF-8">
+  <title>🦊ラドフォのチーム編成ツール</title>
+  <style>
+    body {
+      font-family: sans-serif;
+      padding: 20px;
+      background-color: #f9f9f9;
+    }
+    h1, h2 {
+      margin-bottom: 10px;
+    }
+    .player-checkbox {
+      margin-bottom: 10px;
+      display: flex;
+      align-items: center;
+    }
+    .player-checkbox img {
+      width: 50px;
+      height: 50px;
+      border-radius: 50%;
+      margin-right: 10px;
+      object-fit: cover;
+    }
+    .player-checkbox label {
+      font-size: 20px;
+      font-weight: bold;
+    }
+    select, button {
+      margin: 10px 0;
+    }
+    #teamsOutput {
+      margin-top: 20px;
+      background: #fff;
+      padding: 10px;
+      border-radius: 8px;
+    }
+  </style>
+</head>
+<body>
+
+  <h1>🦊ラドフォのチーム編成ツール</h1>
+
+  <h2>⛔ 欠席者を選択</h2>
+  <div id="absentSelector"></div>
+
+  <label for="groupSize">👥 グループ人数：</label>
+  <select id="groupSize">
+    <option value="2">2人組</option>
+    <option value="3">3人組</option>
+    <option value="4">4人組</option>
+    <option value="5">5人組</option>
+  </select>
+  <button onclick="createTeams()">✅ チーム編成</button>
+
+  <div id="teamsOutput"></div>
+
+  <script>
+    const members = [
+      { name: "イヴ", courtNumber: 3, height: 163, position: "F", absent: false, photo: "images/3.jpg"},
+      { name: "トイ", courtNumber: 6, height: 164, position: "F", absent: false, photo: "images/6.jpg"},
+      { name: "サラ", courtNumber: 8, height: 169, position: "C", absent: false, photo: "images/8.jpg"},
+      { name: "ジェイ", courtNumber: 11, height: 163, position: "G", absent: false, photo: "images/11.jpg"},
+      { name: "リュウ", courtNumber: 12, height: 150, position: "G", absent: false, photo: "images/12.jpg"},
+      { name: "カナ", courtNumber: 14, height: 162, position: "F", absent: false, photo: "images/14.jpg"},
+      { name: "リア", courtNumber: 18, height: 153, position: "G", absent: false, photo: "images/18.jpg"},
+      { name: "コア", courtNumber: 25, height: 151, position: "G", absent: false, photo: "images/25.jpg"},
+      { name: "ヒカ", courtNumber: 27, height: 154, position: "G", absent: false, photo: "images/27.jpg"},
+      { name: "ショウ", courtNumber: 30, height: 175, position: "C", absent: false, photo: "images/30.jpg"},
+      { name: "アイ", courtNumber: 37, height: 143, position: "G", absent: false, photo: "images/37.jpg"},
+      { name: "トア", courtNumber: 44, height: 162, position: "G", absent: false, photo: "images/18.jpg"},
+      { name: "レン", courtNumber: 52, height: 169, position: "F", absent: false, photo: "images/18.jpg"},
+      { name: "ココ", courtNumber: 55, height: 156, position: "G", absent: false, photo: "images/18.jpg"},
+      { name: "ルリ", courtNumber: 81, height: 165, position: "F", absent: false, photo: "images/18.jpg"},
+      { name: "ライ", courtNumber: 87, height: 162, position: "F", absent: false, photo: "images/18.jpg"},
+      { name: "クウ", courtNumber: 88, height: 165, position: "F", absent: false, photo: "images/18.jpg"},
+      { name: "ノン", courtNumber: 99, height: 166, position: "F", absent: false, photo: "images/18.jpg"}
+    ];
+
+    function renderAbsentSelector() {
+      const container = document.getElementById("absentSelector");
+      container.innerHTML = "";
+      members.forEach((player, index) => {
+        const div = document.createElement("div");
+        div.className = "player-checkbox";
+        div.innerHTML = `
+          <img src="${player.photo}" alt="${player.name}">
+          <label>
+            <input type="checkbox" onchange="markAbsent(${index}, this.checked)">
+            ${player.name} #${player.courtNumber}
+          </label>
+        `;
+        container.appendChild(div);
+      });
+    }
+
+    function markAbsent(index, isAbsent) {
+      members[index].absent = isAbsent;
+    }
+
+    function createTeams() {
+      const size = parseInt(document.getElementById("groupSize").value);
+      const presentMembers = members.filter(m => !m.absent);
+      const shuffled = presentMembers.slice().sort(() => Math.random() - 0.5);
+      const teams = [];
+
+      for (let i = 0; i < shuffled.length; i += size) {
+        teams.push(shuffled.slice(i, i + size));
+      }
+
+      const output = document.getElementById("teamsOutput");
+      output.innerHTML = teams.map((team, i) =>
+        `<strong>チーム${i + 1}</strong>: ${team.map(p => p.name).join("、")}`
+      ).join("<br>");
+    }
+
+    window.onload = renderAbsentSelector;
+
+  if ("serviceWorker" in navigator) {
+    navigator.serviceWorker.register("sw.js").then(function () {
+      console.log("Service Worker Registered");
+    });
+  }
+
+
+  </script>
+
+</body>
+</html>
