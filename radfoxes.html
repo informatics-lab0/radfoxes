@@ -37,13 +37,13 @@
     .label-container {
       display: flex;
       align-items: center;
-      gap: 8px;
+      gap: 6px;
       white-space: nowrap;
       font-size: 20px;
     }
     input[type="checkbox"] {
       transform: scale(1.4);
-      margin-right: 6px;
+      margin-right: 4px;
       cursor: pointer;
     }
     select, button {
@@ -119,9 +119,9 @@
         div.innerHTML = `
           <img src="${player.photo}" alt="${player.name}">
           <div class="label-container">
-            <label><input type="checkbox" onchange="markAbsent(${index}, this.checked)">欠席</label>
-            <span>${player.name} #${player.courtNumber}（★</span>
-            <label><input type="checkbox" onchange="markStarter(${index}, this.checked)">）</label>
+            <input type="checkbox" onchange="markStarter(${index}, this.checked)">
+            ★　${player.name} #${player.courtNumber}（欠席
+            <input type="checkbox" onchange="markAbsent(${index}, this.checked)">）
           </div>
         `;
         container.appendChild(div);
