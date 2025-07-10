@@ -133,14 +133,15 @@
 
     function createTeams() {
       const size = parseInt(document.getElementById("groupSize").value);
-      const starters = members.filter(m => m.starter && !m.absent);
-      const others = members.filter(m => !m.starter && !m.absent);
-      const shuffled = others.sort(() => Math.random() - 0.5);
-      const combined = starters.concat(shuffled);
-      const teams = [];
 
-      for (let i = 0; i < combined.length; i += size) {
-        teams.push(combined.slice(i, i + size));
+      // 欠席者 & スタートメンバーを除外してチーム編成対象に
+      const starters = members.filter(m => m.starter && !m.absent);
+      const teamCandidates = members.filter(m => !m.starter && !m.absent);
+      const shuffled = teamCandidates.sort(() => Math.random() - 0.5);
+
+      const teams = [];
+      for (let i = 0; i < shuffled.length; i += size) {
+        teams.push(shuffled.slice(i, i + size));
       }
 
       let html = "";
@@ -158,7 +159,7 @@
     window.onload = renderAbsentSelector;
 
     if ("serviceWorker" in navigator) {
-      navigator.serviceWorker.register("sw.js").then(function () {
+      navigator.serviceWorker.register("sw.js").then(() => {
         console.log("Service Worker Registered");
       });
     }
