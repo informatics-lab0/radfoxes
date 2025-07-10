@@ -119,8 +119,8 @@
         div.innerHTML = `
           <img src="${player.photo}" alt="${player.name}">
           <div class="label-container">
-            <input type="checkbox" onchange="markStarter(${index}, this.checked)">
-            ★　${player.name} #${player.courtNumber}（欠席
+            ★<input type="checkbox" onchange="markStarter(${index}, this.checked)">
+            ${player.name} #${player.courtNumber}（欠席
             <input type="checkbox" onchange="markAbsent(${index}, this.checked)">）
           </div>
         `;
