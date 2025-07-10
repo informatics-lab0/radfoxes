@@ -34,9 +34,12 @@
       margin-right: 12px;
       object-fit: cover;
     }
-    .player-checkbox label {
+    .label-container {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      white-space: nowrap;
       font-size: 24px;
-      font-weight: bold;
     }
     select, button {
       margin: 12px 0;
@@ -110,11 +113,11 @@
         div.className = "player-checkbox";
         div.innerHTML = `
           <img src="${player.photo}" alt="${player.name}">
-          <label>
-            <input type="checkbox" onchange="markAbsent(${index}, this.checked)">欠席 
-            ${player.name} #${player.courtNumber}（★
-            <input type="checkbox" onchange="markStarter(${index}, this.checked)">）
-          </label>
+          <div class="label-container">
+            <label><input type="checkbox" onchange="markAbsent(${index}, this.checked)">欠席</label>
+            <span>${player.name} #${player.courtNumber}（★</span>
+            <label><input type="checkbox" onchange="markStarter(${index}, this.checked)">）</label>
+          </div>
         `;
         container.appendChild(div);
       });
