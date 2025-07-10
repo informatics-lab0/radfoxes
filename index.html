@@ -41,6 +41,11 @@
       white-space: nowrap;
       font-size: 20px;
     }
+    input[type="checkbox"] {
+      transform: scale(1.4);
+      margin-right: 6px;
+      cursor: pointer;
+    }
     select, button {
       margin: 12px 0;
       font-size: 22px;
@@ -133,8 +138,6 @@
 
     function createTeams() {
       const size = parseInt(document.getElementById("groupSize").value);
-
-      // 欠席者 & スタートメンバーを除外してチーム編成対象に
       const starters = members.filter(m => m.starter && !m.absent);
       const teamCandidates = members.filter(m => !m.starter && !m.absent);
       const shuffled = teamCandidates.sort(() => Math.random() - 0.5);
